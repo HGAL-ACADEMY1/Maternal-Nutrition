@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maternal Nutrition - HGAL Academy</title>
+    
+    <!-- Google Fonts: Merriweather for text, Inter for UI elements -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & BASICS --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0b141a; /* Deep WhatsApp-style Dark Charcoal */
+            color: #e9edef; /* High contrast off-white */
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            font-size: 22px; /* Base size, scales to 26px on larger screens */
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- SCROLL PROGRESS BAR --- */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 6px;
+            background: linear-gradient(90deg, #00a884, #25d366);
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(37, 211, 102, 0.5);
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 100px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LOGO --- */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1.5s ease-out;
+        }
+
+        .academy-logo {
+            width: 100%;
+            max-width: 350px; /* Constrained for layout, but high res source */
+            height: auto;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+        }
+
+        /* --- TYPOGRAPHY & CHAT BUBBLE FEEL --- */
+        p, h1, h2, ul, li, .note-block {
+            margin-bottom: 1.5em;
+            opacity: 0; /* Hidden initially for animation */
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* The class added by JS to trigger visibility */
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-align: center;
+            color: #25d366; /* Accent Color */
+            margin-bottom: 1em;
+            font-weight: 900;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            color: #53bdeb; /* Soft Blue for subheads */
+            margin-top: 1.5em;
+            border-left: 4px solid #53bdeb;
+            padding-left: 15px;
+        }
+
+        strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        em {
+            color: #aebac1;
+        }
+
+        /* --- LISTS --- */
+        ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+        
+        li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        li::before {
+            content: "➤";
+            position: absolute;
+            left: 0;
+            color: #25d366;
+            font-size: 0.8em;
+            top: 5px;
+        }
+
+        /* --- DATA HIGHLIGHT BOX (Minimalist) --- */
+        .data-highlight {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ffd700;
+            font-size: 0.95em;
+        }
+
+        /* --- VIP SECTION & BUTTON --- */
+        .vip-section {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(11, 20, 26, 0) 0%, rgba(10, 40, 30, 0.6) 100%);
+            border-radius: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #25d366;
+            color: #0b141a;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+        }
+
+        .cta-arrow {
+            display: block;
+            font-size: 2rem;
+            margin: 10px 0;
+            animation: bounce 1.5s infinite;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* --- RESPONSIVE TYPOGRAPHY --- */
+        @media (min-width: 768px) {
+            body { font-size: 26px; }
+            .container { padding: 60px 40px 150px 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-progress"></div>
+
+    <div class="container">
+        
+        <!-- Branding -->
+        <div class="logo-container">
+            <img src="https://i.imgur.com/eP0BFrd.png" alt="HGAL Academy Logo" class="academy-logo">
+        </div>
+
+        <!-- Lecture Title -->
+        <h1>MATERNAL NUTRITION</h1>
+
+        <!-- Content Flow -->
+        <p>Hello there! 👋 Welcome to today's session. I'm going to walk you through everything you need to know about <strong>Maternal Nutrition</strong>. Imagine we are sitting in a classroom, just you and me, and I'm breaking this down step-by-step.</p>
+
+        <p>Let's start with the basics. What does a mother actually need?</p>
+
+        <h2>🥗 Nutritional Requirement of the Mother</h2>
+
+        <p>First off, eating frequently and choosing nutritious foods isn't just about the baby; it helps the mother too! It actually helps prevent those nasty symptoms like nausea, vomiting, and cramps.</p>
+
+        <p>Now, imagine building a house. You need the right materials, right? For a baby, one of the most critical materials is <strong>Folic Acid</strong>.</p>
+
+        <p>Supplementing the diet with foods rich in folic acid—like oranges 🍊 and dark green leafy vegetables 🥬—is crucial. Why? Because it helps prevent <em>neural tube birth defects</em>. This is a very serious condition affecting the baby's brain and spine.</p>
+
+        <p>Next up is <strong>Iron</strong>. Consuming iron-rich foods like lean red meat 🥩 and beans 🫘 helps prevent anemia. This ensures there is enough oxygen travelling through the blood to reach the baby.</p>
+
+        <p>Ideally, a necessary step for a proper diet is taking daily <strong>prenatal vitamins</strong>. Think of these as a safety net. They ensure the body gets exactly what it needs to create a healthy baby.</p>
+
+        <div class="data-highlight">
+            <p><strong>💊 What's inside a Prenatal Vitamin?</strong></p>
+            <ul>
+                <li>Folic Acid</li>
+                <li>Iodine</li>
+                <li>Iron</li>
+                <li>Vitamin A & D</li>
+                <li>Zinc & Calcium</li>
+            </ul>
+        </div>
+
+        <p>Okay, let’s now move on to how the body handles all this food.</p>
+
+        <h2>⚙️ Metabolism and Hormones</h2>
+
+        <p>During pregnancy, the mother's body works like a factory under new management. The metabolism is adjusted by a number of <strong>hormones</strong> acting as mediators.</p>
+
+        <p>These hormones redirect nutrients to highly specialized tissues that are specific to reproduction—specifically the <strong>placenta</strong> and the <strong>mammary glands</strong> (for breastfeeding later).</p>
+
+        <p>Here is the tricky part: The increased need for nutrients cannot always be met just by the mother eating more, no matter how much she eats. The requirement for energy (calories) increases only modestly, but the need for <em>micronutrients</em> (vitamins and minerals) shoots up! 📈</p>
+
+        <p>Because these nutrients are unevenly distributed in food, the body has to use "altered nutrient utilization" and mobilize its own reserves to balance these needs. But... this isn't always successful.</p>
+
+        <p>⚠️ <strong>Warning sign:</strong> In communities where food is scarce ("marginal nutrition"), if a mother has babies back-to-back ("repeated reproduction"), she can suffer from severe nutrient deficiencies.</p>
+
+        <p>Let's look at minerals specifically.</p>
+
+        <p>The baby needs bone-forming minerals—<strong>Calcium, Phosphorus, Magnesium, and Zinc</strong>. These cross the placenta to the baby, and later, they go into breast milk. This places a huge demand on the mother's own mineral "bank account."</p>
+
+        <p>To cope with this, the mother's body uses several biological mechanisms:</p>
+        <ul>
+            <li>She eats more (Increase in food consumption).</li>
+            <li>Her gut absorbs nutrients better (Efficient gastrointestinal absorption).</li>
+            <li>She loses fewer minerals in waste (Decreased mineral excretion).</li>
+            <li>She draws from her own tissues (Mobilization of tissue stores).</li>
+        </ul>
+
+        <h2>👩‍⚕️ The Mother’s Physiology & Background</h2>
+
+        <p>Now, does the mother's history matter? Absolutely.</p>
+
+        <p>The state of the mother’s physiology—especially her reproductive health—at the moment she gets pregnant has a massive influence on the baby's growth.</p>
+
+        <p>Studies have shown a clear relationship between:
+        <br>1. Adult size
+        <br>2. Reproductive efficiency
+        <br>3. Socioeconomic status.</p>
+
+        <p>Put simply: <strong>The baby of a short woman is generally lighter, has less vitality, and has a lower survival rate than that of a tall woman.</strong></p>
+
+        <p>This is a hard truth: Stunting (being short due to poor nutrition in childhood) in the mother <em>cannot</em> be fixed by eating a good diet during pregnancy. It’s too late to fix her height.</p>
+
+        <p>It is axiomatic (a self-evident truth) that preparation for pregnancy should actually begin with good nutrition and healthcare in <strong>childhood</strong>! 👧 This ensures women enter motherhood having achieved optimal growth.</p>
+
+        <p>Research confirms that the height of the mother is closely related to birth weight. Sadly, there are more short mothers in lower socioeconomic groups because inadequate nutrition and illness prevented them from growing fully. This puts them at a disadvantage for childbearing.</p>
+
+        <p>📊 <strong>The Numbers:</strong> Studies by the National Institutes of Health show that mothers who:
+        <br>🔹 Weigh more than 150 lb (68 kg) at conception...
+        <br>🔹 Or gain more than 30 lb (13.6 kg) during pregnancy...
+        <br>...tend to have larger, healthier babies with lower mortality rates compared to those who weigh less.</p>
+
+        <p>Let’s now dive into two special factors affecting the developing world.</p>
+
+        <h2>🌍 Developing World Challenges</h2>
+
+        <p><strong>Factor 1: Early Marriage.</strong>
+        <br>In traditional societies, girls often marry around the age of menarche (their first period) and start having babies immediately. It is generally agreed that the major risk of <strong>low birth weight</strong> occurs within 2 years of menarche.</p>
+
+        <p>For example, the risk of delivering a child weighing less than 2500g is <strong>doubled</strong>! 🚩</p>
+
+        <p>Why? Because the teenager is still growing! There is a competition for nutrients between the fetus and the growing mother. This competition, along with hormonal changes, may actually cause the mother to be shorter permanently.</p>
+
+        <p><strong>Factor 2: Social Status.</strong>
+        <br>In many traditional societies, women have an inferior status. This is reflected in higher death rates for young girls compared to boys and shorter life expectancy. Consequently, the nutrition of a pregnant woman is often just as poor (deplorable) as when she wasn't pregnant.</p>
+
+        <h2>🩸 Iron and Folic Acid: The Critical Elements</h2>
+
+        <p>Pregnancy puts a huge strain on the blood-forming system. The biggest needs are Iron and Folic Acid.</p>
+
+        <p>Let's break down the <strong>Iron Math</strong> 🧮:</p>
+        <ul>
+            <li>Elemental iron in the fetus at birth: <strong>~300 mg</strong>.</li>
+            <li>Iron needed for mother's increased red blood cells: <strong>~500 mg</strong>.</li>
+            <li>Total requirement: Slightly less than <strong>1 gram (1000 mg)</strong>.</li>
+        </ul>
+
+        <p>This need is concentrated mostly in the last half of pregnancy. Now, a good diet provides about 10–15 mg of iron daily, but only 10–20% of that is actually absorbed. This means diet alone provides <em>just</em> a little less than what is needed. We need other sources!</p>
+
+        <p>Usually, the body uses iron stored in bone marrow. Healthy American women have about 300 mg stored. However, many women in developing countries enter pregnancy with <strong>zero</strong> iron stores due to previous pregnancies or menstrual loss. 📉</p>
+
+        <p>Result? Anemia is a very common complication, even in developed countries.</p>
+
+        <p><strong>Now, about Folic Acid...</strong></p>
+        
+        <p>Animal studies suggested vitamins could prevent Neural Tube Defects (NTDs).
+        <br>In 1991, the British Medical Research Council proved it: Women who took <strong>4000 µg</strong> of folic acid daily had a significantly lower risk of recurrent NTD.</p>
+
+        <p>More recently, a study in Northern China (where NTD is common) showed that <strong>400 µg</strong> was effective. However, supplementation only reduces occurrence by 70%. This implies that folic acid is just <em>one</em> factor influencing the closure of the neural tube, but a very important one.</p>
+
+        <p>Because of this, countries like the US now fortify grain products (flour, pasta) with 140 µg of folic acid per 100g. 🍞</p>
+
+        <p><strong>Recommendation:</strong> Upon diagnosis of pregnancy, women should be prescribed <strong>400 µg</strong> of folic acid daily, especially in the early months.</p>
+
+        <h2>⚖️ The Battle for Nutrients (Partitioning)</h2>
+
+        <p>Next, we’ll look at what happens when there isn't enough food. This is called "Nutrient Partitioning."</p>
+
+        <p>When the supply is low, a state of <strong>biological competition</strong> begins between the mother and the baby.
+        <br>🥊 <strong>Who wins?</strong>
+        <br>If the deficiency is <strong>severe</strong>, the mother's body takes preference (to save her life).
+        <br>If the deficiency is <strong>marginal</strong>, the fetus might get favored.</p>
+
+        <p>This has mostly been studied with energy and protein, but it likely applies to micronutrients too.</p>
+
+        <p>Speaking of <strong>Protein</strong>... its requirement is linked to energy. The World Health Organization (WHO) recommends:</p>
+        <div class="data-highlight">
+            <p><strong>WHO Recommendation (for a 55kg woman):</strong></p>
+            <ul>
+                <li>Protein: 1.01 g per kg of body weight.</li>
+                <li>Energy: 46 kcal per kg of body weight.</li>
+            </ul>
+        </div>
+
+        <h2>📝 Quick Reference: Recommended Nutrients</h2>
+        <p>Here is a simplified breakdown of what is needed <em>above</em> the normal daily amount (RDA):</p>
+
+        <ul>
+            <li><strong>⚡ Energy:</strong> Increase by 200 kcal/day (Only in the last trimester).</li>
+            <li><strong>🥩 Protein:</strong> Extra 6g per day.</li>
+            <li><strong>🩸 Iron:</strong> Extra 3mg per day needed.</li>
+            <li><strong>🦴 Calcium:</strong> No increase needed (RDA is sufficient).</li>
+            <li><strong>🍊 Vitamin C:</strong> Extra 120mg per day (to replenish drained stores).</li>
+            <li><strong>☀️ Vitamin D:</strong> Extra 10 µg per day.</li>
+            <li><strong>💊 Folate:</strong> Extra 200 µg per day to maintain plasma levels.</li>
+            <li><strong>🧂 Iodine:</strong> Extra 100 µg per day.</li>
+        </ul>
+
+        <h2>📉 Effects of Nutritional Deficiency</h2>
+
+        <p>At this point, it’s important to consider what happens when things go wrong.</p>
+
+        <p>Laboratory animal studies show that restricting food affects both the mother's adjustments and the baby's growth. Interestingly, you can't easily separate "calorie restriction" from "protein restriction" because the body will burn protein for energy if it lacks calories.</p>
+
+        <p>Generally, food deficiency leads to:
+        <br>1. Smaller litter size.
+        <br>2. Lower weight of offspring.
+        <br>3. Lower survival rate.</p>
+
+        <p>This damage is worse if the hunger continues into the breastfeeding (lactation) period.</p>
+
+        <p><strong>Cellular Growth Phases:</strong> 🧬
+        <br>Growth happens in two phases:
+        <br>1. Increase in <strong>Cell Number</strong> (measured by DNA).
+        <br>2. Increase in <strong>Cell Size</strong> (measured by Protein).</p>
+
+        <p>If food is restricted during phase 1 (cell division), the organ ends up permanently smaller. This restriction is likely <strong>irreversible</strong>.</p>
+
+        <h2>💊 Effects of Supplementing Diet</h2>
+
+        <p>Finally, let's look at solutions.</p>
+
+        <p>In well-nourished communities, mothers don't really need extra supplements beyond Iron and Folic Acid in the last trimester, assuming they eat a good mixed diet.</p>
+
+        <p>However, in communities where diets are poor and mothers may be stunted from their own childhoods, supplementation is <strong>vital</strong> to avoid fetal malnutrition.</p>
+
+        <p>Many countries now have national programs including:
+        <br>✅ Free subsidized foods (especially milk).
+        <br>✅ Fair price retail shops.
+        <br>✅ Fortification of ordinary foods.
+        <br>✅ Cash benefits to improve purchasing power.</p>
+
+        <p>And that brings us to the end of our lecture on Maternal Nutrition!</p>
+
+        <!-- VIP SECTION -->
+        <div class="vip-section">
+            <p style="font-size: 1.1em; margin-bottom: 0;">Join our VIP if you're yet to, for more study materials and other bonuses (worth #115,000).</p>
+            <p>For more details click below</p>
+            
+            <div class="cta-arrow">👇</div>
+            
+            <a href="https://tinyurl.com/2dbtvx2b" target="_blank" class="cta-button">
+                Click Here
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SCROLL PROGRESS BAR LOGIC ---
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        };
+
+        // --- SCROLL REVEAL ANIMATION LOGIC ---
+        // This creates the "pop" effect as the student reads down
+        document.addEventListener("DOMContentLoaded", function() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            // Select all text elements to animate
+            const elements = document.querySelectorAll('p, h1, h2, ul, li, .note-block, .logo-container');
+            elements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+                                                                                                                                                                                                                          </html>
